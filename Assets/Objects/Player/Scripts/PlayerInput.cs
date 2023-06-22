@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using System;
 using CustomInputSystem;
 
 namespace SonicFramework
@@ -25,7 +21,7 @@ namespace SonicFramework
 
         void Update()
         {
-            // Booleans from Physics script activate based on input of Keybinds
+            // Booleans from Player script activate based on input of Keybinds scriptable object
             player.inputUp = inputManager.GetAction("Up");
             player.inputDown = inputManager.GetAction("Down");
             player.inputLeft = inputManager.GetAction("Left");

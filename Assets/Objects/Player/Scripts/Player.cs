@@ -10,11 +10,36 @@ namespace SonicFramework
     {
         public enum Character
         {
-            Sonic = 0
+            Sonic = 0,
+            Tails = 1,
+            Knuckles = 2,
         }
 
-        [Header("Components")]
+        #region Components
+        public static Player leader; // Static means it belongs to the class, and not the object
+        public static PlayerInput input;
         public PlayerStats stats;
+        #endregion
+
+        #region Variables, Vectors, and More
+        float stepDelta;
+        [Space(5)]
+        public Vector2 position;
+        public Vector2 velocity;
+        [Space(5)]
+        public float groundSpeed;
+        public float groundAngle;
+        [Space(5)]
+        #endregion
+
+        #region Ground Check
+        public bool isGrounded;
+        #endregion
+
+        #region Booleans
+        public bool isLeader;
+        public bool isRolling;
+        #endregion
 
         #region Input Booleans
         // These booleans will activate when Actions from Keybinds are used (processed through InputManager and InputActions scripts)
@@ -29,30 +54,65 @@ namespace SonicFramework
         [System.NonSerialized] public bool inputDownLastFrame;
         #endregion
 
-        // Start is called before the first frame update
+        void OnEnable()
+        {
+            Initialize_Player_State();
+        }
+
         void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            TestMovement();
-        }
-
-        private void FixedUpdate()
         {
             
         }
 
-        void TestMovement()
+        public void Player_Update(float deltaTime)
         {
-            if (inputRight)
-            {
-                transform.position += 2 * transform.right * Time.deltaTime;
-            }
+            StateMachine_Run(nextState); // When this method is called on, it will run the next player state
         }
+
+        public void Player_Late_Update()
+        {
+
+        }
+
+        #region State Machine and States
+        public delegate void state();
+        public state currentState;
+        public state nextState;
+
+        void Initialize_Player_State()
+        {
+            nextState = Player_State_Grounded; // When loaded into game, this is the initial state of player
+        }
+
+        void StateMachine_Run(state stateMethod)
+        {
+            currentState = stateMethod;
+            stateMethod();
+        }
+
+        /// <summary>
+        /// This is where all player states are listed
+        /// Depending on condition, transition to next state from current one
+        /// </summary>
+        void Player_State_Grounded()
+        {
+            Debug.Log("ground state");
+
+            // If no longer grounded, switch to airborne state
+            if (!isGrounded) nextState = Player_State_Airborne;
+        }
+        void Player_State_Airborne()
+        {
+            Debug.Log("air state");
+
+            // If no longer airborne, switch to grounded state
+            if (isGrounded) nextState = Player_State_Grounded;
+        }
+        void Player_State_Roll()
+        { 
+            Debug.Log("roll state");
+        }
+        #endregion
     }
 }
 

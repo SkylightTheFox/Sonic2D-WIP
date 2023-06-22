@@ -542,3 +542,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: 3180fd480a43b994a86e06f511d66a92, type: 2}
+  position: {x: 0, y: 0}
+  velocity: {x: 0, y: 0}
+  groundSpeed: 0
+  groundAngle: 0
+  isGrounded: 0
+  isLeader: 0
+  isRolling: 0
