@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fef2b27234e2c94387aa57fbe6e21f4, type: 3}
+  m_Name: SonicStats
+  m_EditorClassIdentifier: 
+  groundTopSpeed: 6
+  groundAcceleration: 0.046875
+  groundDeceleration: 0.5
+  groundFriction: 0.046875
+  rollFriction: 0.0234375
+  rollDeceleration: 0.125
+  topYSpeed: 16
+  airAcceleration: 0.09375
+  airDrag: 0.125
+  gravityForce: 0.21875
+  jumpForce: 6.5
+  jumpCut: 4
