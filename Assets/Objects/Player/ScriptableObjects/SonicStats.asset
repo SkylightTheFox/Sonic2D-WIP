@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fef2b27234e2c94387aa57fbe6e21f4, type: 3}
   m_Name: SonicStats
   m_EditorClassIdentifier: 
-  groundTopSpeed: 6
+  topGroundSpeed: 6
   groundAcceleration: 0.046875
   groundDeceleration: 0.5
   groundFriction: 0.046875

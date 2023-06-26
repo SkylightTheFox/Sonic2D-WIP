@@ -142,7 +142,7 @@ namespace SonicFramework
         #region Ground Handlers
         void UpdatePosition()
         {
-            position += velocity * stepDelta / 16f;
+            position += velocity * stepDelta / 16f; // Velocity is added gradually to transform positon over time
         }
         
         void Apply_Player_Movement()
@@ -156,69 +156,90 @@ namespace SonicFramework
         }
 
         void Player_Handle_Ground_Movement()
-        {   
-            if (!isRolling)
-            {
-                groundSpeed -= stats.slopeFactor * Mathf.Sin(groundAngle * Mathf.Deg2Rad) * stepDelta;
-            }
+        {
+            // Ground speed is decreased when going up steep slopes
+            groundSpeed -= stats.slopeFactor * Mathf.Sin(groundAngle * Mathf.Deg2Rad) * stepDelta;
             
-            Handle_Input();
+            // Ground speed is updated based on Input and applies acceleration/deceleration
+            Handle_Ground_Input();
 
-            #region This isn't really supposed to be here, lol
-            if (inputRight && !inputLeft)
-            {
-                groundSpeed += 0.046875f * stepDelta; // Right (Negative) Direction (Watch the "+=" sign)
-                groundSpeed -= stats.slopeFactor * Mathf.Sin(groundAngle * Mathf.Deg2Rad) * stepDelta;
-            }
-
-            if (inputLeft && !inputRight)
-            {
-                groundSpeed -= 0.046875f * stepDelta; // Left (Negative) Direction (Watch the "-=" sign)
-                groundSpeed -= stats.slopeFactor * Mathf.Sin(groundAngle * Mathf.Deg2Rad) * stepDelta;
-            }
-            #endregion
-
+            // Move player
             velocity.x = groundSpeed * Mathf.Cos(groundAngle * Mathf.Deg2Rad);
             velocity.y = groundSpeed * Mathf.Sin(groundAngle * Mathf.Deg2Rad);
-
             UpdatePosition();
         }
         #endregion
 
         #region Input Handler
-        void Handle_Input()
+        void Handle_Ground_Input()
         {
             if (inputRight && !inputLeft)
             {
                 Debug.Log("Right");
-                if (groundSpeed > 0)
+                if (groundSpeed < 0) // If left input is applied, the following code is executed in this IF statement
                 {
-                    if (groundSpeed < stats.topGroundSpeed)
+                    if (!isRolling) // (Emulates skiding to a stop)
                     {
-                        groundSpeed += 0.046875f * stepDelta; // Right (Positive) Direction (Watch the "+=" sign)
+                        groundSpeed += stats.groundDeceleration * stepDelta; // Apply ground deceleration (Adding negative value to positive X direction)
+                    }
+                    else
+                    {
+                        groundSpeed += stats.rollDeceleration * stepDelta; // Apply roll deceleration
+                    }
+
+                    if (groundSpeed >= 0)
+                    {
+                        groundSpeed = 0.5f * stepDelta; // Apply gradual deceleration
                     }
                 }
-                else
+                else // When normally moving right
                 {
-                    groundSpeed += 0.5f * stepDelta;
-                    if (groundSpeed > 0) groundSpeed = 0.5f;  
-                }    
+                    if (groundSpeed < stats.topGroundSpeed) // If not at top speed, allow code to be run
+                    {
+                        if (!isRolling)
+                        {
+                            groundSpeed += stats.groundAcceleration * stepDelta; // Apply ground acceleration
+                        }
+                        if (groundSpeed >= stats.topGroundSpeed) // If top speed is reached, apply speed limit
+                        {
+                            groundSpeed = stats.topGroundSpeed;
+                        }
+                    }
+                }
             }
                 
             if (inputLeft && !inputRight)
             {
                 Debug.Log("Left");
-                if (groundSpeed < 0)
+                if (groundSpeed > 0) // When moving right, but initially facing left, this code is executed
                 {
-                    if (groundSpeed > -stats.topGroundSpeed)
+                    if (!isRolling) // (Emulates skiding to a stop)
                     {
-                        groundSpeed -= 0.046875f * stepDelta;
+                        groundSpeed -= stats.groundDeceleration * stepDelta; // Apply ground deceleration (Subtracing negative value to negative X direction)
+                    }
+                    else
+                    {
+                        groundSpeed -= stats.rollDeceleration * stepDelta; // Apply roll deceleration
+                    }
+
+                    if (groundSpeed <= 0)
+                    {
+                        groundSpeed = -0.5f * stepDelta; // apply gradual deceleration (Remove step delta from this?)
                     }
                 }
-                else
+                else // When normally moving left
                 {
-                    groundSpeed -= 0.5f * stepDelta;
-                    if (groundSpeed < 0) groundSpeed = -0.5f;
+                    if (groundSpeed > -stats.topGroundSpeed) // If not at negative top speed, allow code to be run
+                    {
+                        if (!isRolling)
+                        {
+                            groundSpeed -= stats.groundAcceleration * stepDelta; // Apply ground acceleration
+                        }
+                        if (groundSpeed <= -stats.topGroundSpeed) // If top speed reached, apply speed limit
+                        {
+                            groundSpeed = -stats.topGroundSpeed;
+                        }
+                    }
                 }
             }
 
@@ -228,7 +249,7 @@ namespace SonicFramework
                 if (Mathf.Abs(groundSpeed) > 0)
                 {
                     float groundSpeedSign = Mathf.Sign(groundSpeed);
-                    groundSpeed -= 0.046875f * groundSpeedSign * stepDelta;
+                    groundSpeed -= stats.groundFriction * groundSpeedSign * stepDelta;
 
                     if (Mathf.Sign(groundSpeed) != groundSpeedSign)
                     {
