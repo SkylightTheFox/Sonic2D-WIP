@@ -29,7 +29,7 @@ MonoBehaviour:
     positiveKeyCodes:
     - RightArrow
     negativeKeyCodes: []
-  - ActionName: Action
+  - ActionName: Jump
     positiveKeyCodes:
     - A
     - S

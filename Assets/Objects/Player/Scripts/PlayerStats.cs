@@ -4,10 +4,11 @@ using UnityEngine;
 public class PlayerStats : ScriptableObject
 {
     [Header("Ground")]
-    public float groundTopSpeed;
+    public float topGroundSpeed;
     public float groundAcceleration;
     public float groundDeceleration;
     public float groundFriction;
+    public float slopeFactor;
 
     [Header("Roll")]
     public float rollFriction;

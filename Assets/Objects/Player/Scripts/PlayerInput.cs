@@ -26,7 +26,7 @@ namespace SonicFramework
             player.inputDown = inputManager.GetAction("Down");
             player.inputLeft = inputManager.GetAction("Left");
             player.inputRight = inputManager.GetAction("Right");
-            player.inputJump = inputManager.GetAction("Action");
+            player.inputJump = inputManager.GetAction("Jump");
         }
     }
 }

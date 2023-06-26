@@ -16,6 +16,7 @@ MonoBehaviour:
   groundAcceleration: 0.046875
   groundDeceleration: 0.5
   groundFriction: 0.046875
+  slopeFactor: 0.125
   rollFriction: 0.0234375
   rollDeceleration: 0.125
   topYSpeed: 16
